@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<title>将win32软件封装成为UWP，以实现win32应用隔离 -&gt; SaltedFishes&apos;s Blog</title>
+		<meta name="author" content="SaltedFishes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#92cafa">
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#054072">
+		<meta name="description" content="面向小白使用 MSIX Packaging Tool 将win32应用封装为UWP（.msix）的教程。">
+		<link rel="canonical" href="https://saltedfishes.com/Archive/win32-to-MSIX">
+		<link rel="icon" type="image/x-icon" href="/favicon.ico">
+		<link rel="icon" type="image/png" href="/images/favicon.png" sizes="512x512">
+		<link rel="icon" type="image/webp" href="/images/favicon.webp" sizes="2048x2048">
+		<link rel="stylesheet" href="/Archive/ParticleX-lib/font.css">
+		<link rel="stylesheet" href="/Archive/ParticleX-lib/noscript.css">
+	</head>
+	<body>
+		<div class="menu-bg">
+			<a href="#menu" class="menu-switch">
+				<div class="title">
+					<i class="fa-solid fa-bars"></i>
+					<span>&emsp;SALTEDFISHES&apos;S BLOG</span>
+				</div>
+			</a>
+			<nav id="menu" class="menu">
+				<ul>
+					<li><a class="title" href="https://saltedfishes.com/"><span>SALTEDFISHES&apos;S BLOG</span></a></li>
+					<li><a href="https://saltedfishes.com/"><i class="fa-solid fa-house"></i><span>&ensp;Home</span></a></li>
+					<li><a href="https://saltedfishes.com/"><i class="fa-solid fa-id-card"></i><span>&ensp;About</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/archives"><i class="fa-solid fa-box-archive"></i><span>&ensp;Archives</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/categories"><i class="fa-solid fa-bookmark"></i><span>&ensp;Categories</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/tags"><i class="fa-solid fa-tags"></i><span>&ensp;Tags</span></a></li>
+				</ul>
+			</nav>
+			<a href="#menu-switch" class="backdrop" tabindex="-1" hidden></a>
+		</div>
+		<div class="article">
+			<div>
+				<h1>将win32软件封装成为UWP，以实现win32应用隔离</h1>
+			</div>
+			<div class="info">
+				<span class="date"><span class="icon"><i class="fa-solid fa-calendar"></i></span>2023/7/1</span>
+				<span class="category"><a href="https://saltedfishes.com/Archive/categories/Windows/"><span class="icon"><i class="fa-solid fa-bookmark"></i></span>Windows</a></span>
+				<span class="tags">
+					<span class="icon"><i class="fa-solid fa-tags"></i></span>
+					<span class="tag"><a href="https://saltedfishes.com/Archive/tags/UWP/" style="color: #ffa2c4">UWP</a></span>
+					<span class="tag"><a href="https://saltedfishes.com/Archive/tags/Windows/" style="color: #494cde">Windows</a></span>
+				</span>
+			</div>
+			<div class="content" v-pre>
+				<p>这个标题其实是某些营销号给的灵感，我原本是想以<code>使用MSIX Packaging Tool将win32封装为UWP</code>作为标题的.<br>但是很明显有个问题，读者看到后可能就会因看不懂标题而放弃阅读………所以就使用这个标题了<br>毕竟，他们只介绍了微软发布了这个工具却没有介绍如何使用……</p>
+				<h2 id="0x01-介绍"><a href="#0x01-介绍" class="headerlink" title="0x01.介绍"></a>0x01.介绍</h2><blockquote>
+					<p>本教程适用于Windows10或者Windows11 (理论上封装完成的包(.msix)在Windows7之后的版本都可以使用)</p>
+				</blockquote>
+				<p>什么是UWP？</p>
+				<ul>
+					<li>通用Windows平台 (Universal Windows Platform)，此软件平台的目的是帮助发展Metro样式的应用程序，便于软件可以在Windows 10和Windows 10 Mobile上执行且无需重新编写。</li>
+				</ul>
+				<p>UWP 应用的特点：</p>
+				<ol>
+					<li>安全：UWP 应用声明其访问哪些设备资源和数据 用户必须对该访问授权。</li>
+					<li>能够在运行 Windows 的所有设备上使用常见的 API。</li>
+					<li>能够在不对计算机构成风险或引起“计算机损坏”的情况下安装卸载和使用。</li>
+				</ol>
+				<h2 id="0x02-准备环境"><a href="#0x02-准备环境" class="headerlink" title="0x02.准备环境"></a>0x02.准备环境</h2><p>这里我推荐在虚拟机环境中使用MSIX Packaging Tool将win32封装。<br>虚拟机的话hyper-v、VirtualBox、VMware都可以<br><del>至于说虚拟机怎么使用…….嘛，其他人不是写了那么多教程，还请您自己查呢</del><br>MSIX Packaging Tool只能在Windows10或者Windows11的环境中使用<br>但是封装时<code>添加 MSIX Core 的支持</code>后的包理论上可以在Windows7之后的版本中使用(具体我没测试，我只能保证可以在Windows10和Windows11中使用)。</p>
+				<p>其实在<a target="_blank" rel="noopener" href="https://apps.microsoft.com/store/detail/msix-packaging-tool/9N5LW3JBCXKF">Microsoft store</a>或者在<a target="_blank" rel="noopener" href="https://github.com/microsoft/win32-app-isolation">GitHub</a>里下载并安装好MSIX Packaging Tool就算是准备好环境了。</p>
+				<h2 id="0x03-封装"><a href="#0x03-封装" class="headerlink" title="0x03.封装"></a>0x03.封装</h2><p>从这里开始是本文主要内容</p>
+				<h3 id="1-安装包签名"><a href="#1-安装包签名" class="headerlink" title="1.安装包签名"></a>1.安装包签名</h3><p>如果你希望你封装出的msix安装包可以安装，那么这一步必不可少。<br>可以正常安装签名有两种方法：</p>
+				<ol>
+					<li>使用证书(.pfx)签名 (推荐)</li>
+				</ol>
+				<blockquote><p>这种签名方法请通过自行可以参考微软官方文档: <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/msix/package/create-certificate-package-signing">为程序包签名创建证书</a>。<br>如果看不懂也没关系，可以参考我写的这一篇: <a href="https://saltedfishes.com/Archive/create-certificate-package-signing/">为程序包(MSIX)签名创建证书(.pfx)</a>。</p></blockquote>
+				<ol start="2">
+					<li>使用Device Guard签名版本2进行签名 (不推荐)</li>
+				</ol>
+				<blockquote>
+					<p>这里需要使用工作或者学习账户登录进行授权，这里可以使用E5管理员账户登录</p>
+				</blockquote>
+				<p>至于说时间戳服务器URL，这里我推荐填写<code>http://timestamp.digicert.com/scripts/timestamp</code>，当然你也可以不填写，基本不会影响使用。</p>
+				<h3 id="2-打包"><a href="#2-打包" class="headerlink" title="2.打包"></a>2.打包</h3>
+				<p>第2和第3步直接选择下一个即可，第4步时请选择你要打包的软件的安装程序，并且配置好安装包签名</p>
+				<p>第5步时参数可以随便填写，并不会有任何使用上的区别。<br>但是如需在较老版本的Windows中使用请勾选<code>将对 MSIX Core 的支持添加到包中</code>并选择合适的版本。<br>第6步时需要等待一小会，会自动弹出安装程序。如第7步所示，直接按照正常安装流程安装即可。<br>不过安装完成后我推荐运行一次程序，然后关闭，再打开安装目录，将多余的程序删除（例如卸载程序，这对于UWP来说没有用）<br>以及删除文件的时候记得清空回收站</p>
+				<p>第9、10、11步一般情况下直接选择下一个就可以，一般情况下这里不需要配置，默认即可。</p>
+				<h2 id="0x04-安装"><a href="#0x04-安装" class="headerlink" title="0x04.安装"></a>0x04.安装</h2><p>如果你做到此步，其实是可以直接安装的。</p>
+				<p>如果发现MSIX Packaging Tool生成的安装包无法直接安装。实际上这是由于Windows安装软件时会校验安装包签名，而您配置证书的时候错误配置了，导致Windows不认识这个证书，自然就拒绝安装了。</p>
+				<p>如果是Windows11，那么解决方法很简单，使用PowerShell安装，命令如下</p>
+				<div>
+					<div class="code-content">Add-AppPackage -Path &quot;这里填写安装包的名称和路径&quot; -AllowUnsigned</div>
+                	<div class="language">PowerShell</div>
+                </div>
+                <p>如果不是Windows11的话，可以尝试以下步骤:<br>右键选择属性，在属性选项卡选择<code>数字签名</code>，选中其中的一条，选择<code>详情信息</code>，再选择<code>查看证书</code>。<br>在证书页面中选择<code>安装证书</code>，选择<code>本地计算机</code>，并点击下一步。选择<code>将所有证书都放入下列存储</code>并浏览选择<code>受信任的根证书颁发机构</code>即可。</p>
+                <h2 id="0x05-其他"><a href="#0x05-其他" class="headerlink" title="0x05.其他"></a>0x05.其他</h2>
+                <ol>
+                	<li>注意：<code>0x03封装</code>的安装过程中应用安装完成后请启动应用一次，以确保应用可以运行(因为部分应用实际上是需要启动一次才可以真正完成安装)</li>
+                	<li>封装过程中请尽量不要干其他无关事情(尽量保证后台无其它程序)。</li>
+                	<li>如果非必要，我推荐断网封装，这样可以有效阻止热更新以节省空间。</li>
+                	<li>其实第10步时，如果有<code>要从程序包排除的服务</code>的一栏选项，推荐勾选上(因为绝大多数情况出现这一栏代表你后台可能运行无关程序了)</li>
+                	<li>再次强调，如需在较老版本的Windows(例如Windows7)中使用请勾选<code>将对 MSIX Core 的支持添加到包中</code>并选择合适的版本。</li>
+                	<li>…….或许还有更多需要注意的…..以后想到了再补充………</li>
+                </ol>
+			</div>
+		</div>
+		<footer id="footer">
+			<div id="footer-wrap">
+				<div>&copy; 2022 - 2025 SaltedFishes</div>
+				<div>
+					Based on the
+					<a target="_blank" href="https://hexo.io/">Hexo Engine</a>
+					&amp;
+					<a target="_blank" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

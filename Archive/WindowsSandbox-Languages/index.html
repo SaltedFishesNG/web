@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<title>Windows Sandbox配置启动时默认语言 -&gt; SaltedFishes&apos;s Blog</title>
+		<meta name="author" content="SaltedFishes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#92cafa">
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#054072">
+		<meta name="description" content="修改 Windows Sandbox 启动时默认语言以及默认注册表的教程">
+		<link rel="canonical" href="https://saltedfishes.com/Archive/WindowsSandbox-Languages">
+		<link rel="icon" type="image/x-icon" href="/favicon.ico">
+		<link rel="icon" type="image/png" href="/images/favicon.png" sizes="512x512">
+		<link rel="icon" type="image/webp" href="/images/favicon.webp" sizes="2048x2048">
+		<link rel="stylesheet" href="/Archive/ParticleX-lib/font.css">
+		<link rel="stylesheet" href="/Archive/ParticleX-lib/noscript.css">
+	</head>
+	<body>
+		<div class="menu-bg">
+			<a href="#menu" class="menu-switch">
+				<div class="title">
+					<i class="fa-solid fa-bars"></i>
+					<span>&emsp;SALTEDFISHES&apos;S BLOG</span>
+				</div>
+			</a>
+			<nav id="menu" class="menu">
+				<ul>
+					<li><a class="title" href="https://saltedfishes.com/"><span>SALTEDFISHES&apos;S BLOG</span></a></li>
+					<li><a href="https://saltedfishes.com/"><i class="fa-solid fa-house"></i><span>&ensp;Home</span></a></li>
+					<li><a href="https://saltedfishes.com/"><i class="fa-solid fa-id-card"></i><span>&ensp;About</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/archives"><i class="fa-solid fa-box-archive"></i><span>&ensp;Archives</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/categories"><i class="fa-solid fa-bookmark"></i><span>&ensp;Categories</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/tags"><i class="fa-solid fa-tags"></i><span>&ensp;Tags</span></a></li>
+				</ul>
+			</nav>
+			<a href="#menu-switch" class="backdrop" tabindex="-1" hidden></a>
+		</div>
+		<div class="article">
+			<div><h1>Windows Sandbox配置启动时默认语言</h1></div>
+			<div class="info">
+				<span class="date"><span class="icon"><i class="fa-solid fa-calendar"></i></span>2023/6/18</span>
+				<span class="category"><a href="https://saltedfishes.com/Archive/categories/Windows/"><span class="icon"><i class="fa-solid fa-bookmark"></i></span>Windows</a></span>
+				<span class="tags"><span class="icon"><i class="fa-solid fa-tags"></i></span><span class="tag"><a href="https://saltedfishes.com/Archive/tags/Windows-Sandbox/" style="color: #2464a3">Windows Sandbox</a></span></span>
+			</div>
+			<div class="content" v-pre>
+				<p>不知道为什么某一次系统更新之后Windows沙盒的默认语言变成了en-US，于是就有了这篇文章。</p>
+				<h2 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1.准备工作"></a>1.准备工作</h2><p>Windows Sandbox的磁盘目录在<code>C:\ProgramData\Microsoft\Windows\Containers\BaseImages\ &lt;这里是uuid，理论上每个人都不一样&gt; \BaseLayer\Files</code>中。</p>
+				<details>
+					<summary>不知道uuid？</summary><blockquote>
+						有没有一种可能，就是<code>C:\ProgramData\Microsoft\Windows\Containers\BaseImages\</code>这个目录下只有一个文件夹，而这个文件夹的名字就是uuid命名的
+					</blockquote></details>
+					<p>而想要修改启动时默认语言需要修改此目录中<code>\Users\WDAGUtilityAccount\ntuser.dat</code>这个注册表文件（注意：此文件是隐藏文件，需要打开显示隐藏的项目）</p>
+					<p>将这个文件复制到其他你能找到的位置中</p>
+					<h2 id="2-修改注册表"><a href="#2-修改注册表" class="headerlink" title="2.修改注册表"></a>2.修改注册表</h2>
+					<p>打开注册表编辑器，选中节点<code>计算机\HKEY_USERS</code>，点击文件选项卡中的加载配置单元<br>选择刚才复制的文件，并随便输入一个项目名</p>
+					<p>选择目录<code>计算机\HKEY_USERS\ &lt;你刚才输入的项目名&gt; \Control Panel\Desktop</code>，在右侧找到<code>PreferredUILanguagesPending</code>和<code>PreviousPreferredUILanguages</code>并其值修改为你希望显示的语言</p>
+					<h2 id="3-完成修改"><a href="#3-完成修改" class="headerlink" title="3.完成修改"></a>3.完成修改</h2>
+					<p>最后再选择目录<code>计算机\HKEY_USERS\ &lt;你刚才输入的项目名&gt;</code>并点击文件选项卡中的卸载配置单元</p>
+					<p>再将修改好的文件替换回原来的位置<code>C:\ProgramData\Microsoft\Windows\Containers\BaseImages\ &lt;这里是uuid，理论上每个人都不一样&gt; \BaseLayer\Files\Users\WDAGUtilityAccount</code>即可完成修改</p>
+					<h2 id="4-最后"><a href="#4-最后" class="headerlink" title="4.最后"></a>4.最后</h2>
+					<p>当然还可以修改些其他内容，例如修改磁盘目录文件使其开机就自带一些文件或者软件（例如7-zip）</p>
+			</div>
+			<div id="comment">
+				<div id="giscus-container" class="giscus"></div>
+			</div>
+		</div>
+		<footer id="footer">
+			<div id="footer-wrap">
+				<div>&copy; 2022 - 2025 SaltedFishes</div>
+				<div>
+					Based on the
+					<a target="_blank" href="https://hexo.io/">Hexo Engine</a>
+					&amp;
+					<a target="_blank" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

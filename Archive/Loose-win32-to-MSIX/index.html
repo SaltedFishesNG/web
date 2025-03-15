@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="utf-8">
+		<title>使用 MSIX Packaging Tool 将松散文件封装为UWP -&gt; SaltedFishes&apos;s Blog</title>
+		<meta name="author" content="SaltedFishes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#92cafa">
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#054072">
+		<meta name="description" content="面向小白的使用 MSIX Packaging Tool 将松散文件封装成.msix文件的教程">
+		<link rel="canonical" href="https://saltedfishes.com/Archive/Loose-win32-to-MSIX">
+		<link rel="icon" type="image/x-icon" href="/favicon.ico">
+		<link rel="icon" type="image/png" href="/images/favicon.png" sizes="512x512">
+		<link rel="icon" type="image/webp" href="/images/favicon.webp" sizes="2048x2048">
+		<link rel="stylesheet" href="/Archive/ParticleX-lib/font.css">
+		<link rel="stylesheet" href="/Archive/ParticleX-lib/noscript.css">
+	</head>
+	<body>
+		<div class="menu-bg">
+			<a href="#menu" class="menu-switch">
+				<div class="title">
+					<i class="fa-solid fa-bars"></i>
+					<span>&emsp;SALTEDFISHES&apos;S BLOG</span>
+				</div>
+			</a>
+			<nav id="menu" class="menu">
+				<ul>
+					<li><a class="title" href="https://saltedfishes.com/"><span>SALTEDFISHES&apos;S BLOG</span></a></li>
+					<li><a href="https://saltedfishes.com/"><i class="fa-solid fa-house"></i><span>&ensp;Home</span></a></li>
+					<li><a href="https://saltedfishes.com/"><i class="fa-solid fa-id-card"></i><span>&ensp;About</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/archives"><i class="fa-solid fa-box-archive"></i><span>&ensp;Archives</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/categories"><i class="fa-solid fa-bookmark"></i><span>&ensp;Categories</span></a></li>
+					<li><a href="https://saltedfishes.com/Archive/tags"><i class="fa-solid fa-tags"></i><span>&ensp;Tags</span></a></li>
+				</ul>
+			</nav>
+			<a href="#menu-switch" class="backdrop" tabindex="-1" hidden></a>
+		</div>
+		<div class="article">
+			<div><h1>使用 MSIX Packaging Tool 将松散文件封装为UWP</h1></div>
+			<div class="info">
+				<span class="date"><span class="icon"><i class="fa-solid fa-calendar"></i></span>2023/7/2</span>
+				<span class="category"><a href="https://saltedfishes.com/Archive/categories/Windows/"><span class="icon"><i class="fa-solid fa-bookmark"></i></span>Windows</a></span>
+				<span class="tags">
+					<span class="icon"><i class="fa-solid fa-tags"></i></span>
+					<span class="tag"><a href="https://saltedfishes.com/Archive/tags/UWP/" style="color: #ffa2c4">UWP</a></span>
+					<span class="tag"><a href="https://saltedfishes.com/Archive/tags/Windows/" style="color: #494cde">Windows</a></span>
+				</span>
+			</div>
+			<div class="content" v-pre>
+				<p>如果你没有看懂请参阅上一篇文章：<a href="https://saltedfishes.com/Archive/win32-to-MSIX/">将win32软件封装成为UWP，以实现win32应用隔离</a></p>
+				<h2 id="0x01简要说明"><a href="#0x01简要说明" class="headerlink" title="0x01简要说明"></a>0x01简要说明</h2>
+				<p>对比原有安装步骤来说，在选择你想要打包的安装程序的时候空着不用选择。<br>然后在安装的时候将松散文件放在<code>Program Files</code>或者<code>rogram Files (x86)</code>文件夹内，并在开始菜单和桌面上创建快捷方式(不创建也可以)。<br>重点在于<code>首次启动任务</code>选项中要存在正确的启动方式，如果没有就点击浏览并勾选正确的程序。<br>其余步骤与上一篇文章<a href="https://saltedfishes.com/Archive/win32-to-MSIX/">将win32软件封装成为UWP，以实现win32应用隔离</a>基本一致。</p>
+				<h2 id="0x02详细教程"><a href="#0x02详细教程" class="headerlink" title="0x02详细教程"></a>0x02详细教程</h2>
+				<p>很多步骤与上一篇文章大致相同，在此不多赘述，如看不懂请先阅读上一篇文章<a href="https://saltedfishes.com/Archive/win32-to-MSIX/">将win32软件封装成为UWP，以实现win32应用隔离</a></p>
+				<h3 id="01-择想要打包的安装程序"><a href="#01-择想要打包的安装程序" class="headerlink" title="01.择想要打包的安装程序"></a>01.择想要打包的安装程序</h3><p>在选<code>择想要打包的安装程序</code>的时候推荐直接空着(毕竟是松散文件，即使有安装脚本也不推荐选择)</p>
+				<h3 id="02-模拟安装"><a href="#02-模拟安装" class="headerlink" title="02.模拟安装"></a>02.模拟安装</h3>
+				<p>在安装需要打包程序这一步的时候常规方法肯定不行，所以需要模拟正常软件包安装时候的操作。<br>具体操作是，在C盘(如果你的系统盘是C盘)的<code>Program Files</code>或者<code>rogram Files (x86)</code>下创建一个文件夹名字随意，然后将松散文件放置在该文件夹下。<br>如果你的松散文件总有安装脚本在此时可以执行一下(记得删除多余文件并清空回收站)。完成后运行一遍程序以检查程序是否正常工作。<br>以及在桌面和开始菜单创建图标(如果你不会创建那么可以忽略)。</p>
+				<h3 id="03-程序入口点"><a href="#03-程序入口点" class="headerlink" title="03.程序入口点"></a>03.程序入口点</h3>
+				<p>如果在此布没有出现正确的应用图标。<br>那么需要点击浏览，选择正确的可执行文件并添加即可。</p>
+				<p>其余步骤按照上一篇文章<a href="https://saltedfishes.com/Archive/win32-to-MSIX/">将win32软件封装成为UWP，以实现win32应用隔离</a>做即可。</p>
+			</div>
+			<div id="comment">
+				<div id="giscus-container" class="giscus"></div>
+			</div>
+		</div>
+		<footer id="footer">
+			<div id="footer-wrap">
+				<div>&copy; 2022 - 2025 SaltedFishes</div>
+				<div>
+					Based on the
+					<a target="_blank" href="https://hexo.io/">Hexo Engine</a>
+					&amp;
+					<a target="_blank" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

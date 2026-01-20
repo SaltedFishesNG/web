@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Email cannot be decrypted</title>
+		<meta name="author" content="SaltedFishes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="canonical" href="https://saltedfishes.com/pages/Email/">
+		<link rel="icon" type="image/x-icon" href="/favicon.ico">
+		<link rel="icon" type="image/png" href="/images/favicon.png" sizes="3000x3000">
+		<link rel="icon" type="image/png" href="/images/favicon-512x512.png" sizes="512x512">
+		<style>
+:root {
+	color-scheme: light dark;
+}
+body {
+	width: 85%;
+	max-width: 75ch;
+	text-align: center;
+	margin: 1rem auto;
+	padding-top: 20px;
+	font-family: monospace;
+}
+hr {
+	border: 0;
+	padding: 1em 0;
+	position: relative;
+}
+hr::before {
+	content: attr(data-content);
+	position: absolute;
+	padding: 0 1ch;
+	line-height: 1px;
+	border: solid;
+	border-width: 0 99vw;
+	transform: translateX(-50%);
+}
+		</style>
+	</head>
+	<body>
+		<h1>Email cannot be decrypted</h1>
+		<hr data-content="&#10022;">
+		<p>
+			Please try enabling JavaScript and return to the previous page.<br>
+			Or you can check out <a href="/lib/decrypt.js">/lib/decrypt.js</a> and decrypt it yourself.
+		</p>
+		<pre>&#65295;|&#12289;<br>(&#729;&#12289;&#65294;7<br> |&#12289;&#65374;&#12541;<br>    &#12376;&#12375;f_,)&#12494;</pre>
+	</body>
+</html>
